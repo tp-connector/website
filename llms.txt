@@ -1,0 +1,212 @@
+# TipplyConnector
+
+> TipplyConnector v1.0.0 to napisany w Rust lokalny most, który odbiera alerty i donate-y z Tipply przez WebSocket, a później przekazuje je do StreamElements. Posiada wbudowany serwer WWW/API (domyślnie `http://127.0.0.1:26210`), deduplikację zdarzeń, tryb Free i Pro, podpisane wydania Ed25519 oraz licencję weryfikowaną po stronie serwera na podstawie `product_id` Creem.
+
+Strona projektu: <a href="https://tp-connector.vercel.app/" rel="noreferrer noopener">https://tp-connector.vercel.app/</a><br>
+Adres alternatywny: <a href="https://tp-connector.kbdev.run/" rel="noreferrer noopener">https://tp-connector.kbdev.run/</a>
+
+## Jak uruchomić
+
+- [llms.txt](./llms.txt) — ten przewodnik.
+- [build.yml](./.github/workflows/build.yml) — workflow podpisujący i weryfikujący wydania.
+
+1. Rozpakuj archiwum wydania (`TipplyConnector-<wersja>-<edycja>-<target>.zip`) i wejdź do powstałego katalogu.
+2. Raz zapisz sekrety w natywnym magazynie systemu (Windows Credential Manager, macOS Keychain, Linux Secret Service/keyutils), używając `TipplyConnector-core` (na Unixie `./TipplyConnector-core`):
+   - `--set-receiver-id <UUID>` — Tipply receiver_id,
+   - `--set-auth-token <TOKEN>` i `--set-cf-clearance <WARTOŚĆ>` — opcjonalne pobieranie maili (w `config.ini` ustaw `use_tipply_mail = on`),
+   - `--set-se-channelid <ID>` i `--set-se-jwt <JWT>` — StreamElements,
+   - `--set-api-key <KLUCZ>` — opcjonalnie, gdy API ma być wystawione poza localhost,
+   - `--set-license <KLUCZ_CREEM>` — aktywacja licencji w wersji Pro.
+   Stan zapisanych poświadczeń pokazuje `--status-credentials`; kreator interaktywny to `--login`.
+3. Uruchom launcher: `TipplyConnector.exe` na Windowsie albo `./TipplyConnector` na macOS/Linux. Launcher weryfikuje podpis i uruchamia `TipplyConnector-core`.
+4. Otwórz `http://127.0.0.1:26210`, aby zobaczyć interfejs i dokumentację API. `config.ini` jest generowany świeżo: `api = on`, puste `websocket_url`, bez sekretów.
+
+## Porównanie funkcji
+
+- [Cargo.toml](./Cargo.toml) — flagi `default` i `premium` definiujące edycje Free/Pro.
+
+- Free: relay Tipply → StreamElements, lokalne API/Web UI, deduplikacja, podpisane wydanie.
+- Pro: wszystko z Free oraz licencja Creem, `multi_user` i rozszerzone logowanie automatyczne.
+
+### Pierwsze Użycie
+
+> [!CAUTION]
+> **CZERWONA RAMKA — NIGDY NIE UDOSTĘPNIAJ TYCH DANYCH NIKOMU.**<br>
+> `auth_token`, `cf_clearance`, `se_jwt_token`, `receiver_id` i `api_key` dają dostęp do Twojego konta i konfiguracji. Nie wklejaj ich na czacie, w issue na GitHubie, w mailu ani do publicznego kodu. Osoba nieuprawniona może przejąć konto Tipply/StreamElements lub zmienić przekierowanie alertów. Jeśli wartość gdzieś wyciekła — natychmiast ją odśwież w serwisie źródłowym i zapisz nową przez `--set-*`.
+
+#### Karta: Chromium (Chrome, Edge, Brave, Opera)
+
+[1] Zaloguj się na <a href="https://app.tipply.pl" rel="noreferrer noopener">app.tipply.pl</a>.<br>
+    Zostaw kartę zalogowaną — DevTools czyta ruch bieżącej sesji.
+
+[2] Otwórz Developer Tools.<br>
+    Naciśnij `Ctrl + Shift + I` na Windows/Linux albo `Cmd + Option + I` na macOS. Nie instaluj żadnych rozszerzeń.
+
+[3] Wejdź w zakładkę `Network` i ustaw filtr.<br>
+    Wpisz `app.tipply.pl` albo `api`. Jeśli lista jest pusta, naciśnij `Ctrl + R` / `F5` lub kliknij dowolną sekcję panelu, żeby wygenerować ruch.
+
+[4] Wybierz żądanie z sandboxu/API.<br>
+    Kliknij np. żądanie do `app.tipply.pl/api/...` i otwórz panel `Headers`.
+
+[5] Skopiuj ciasteczka sesji.<br>
+    W sekcji `Request Headers` znajdź `Cookie` i skopiuj wartości `auth_token` oraz `cf_clearance`.Alternatywnie: `Application` → `Cookies` → `https://app.tipply.pl`. `cf_clearance` rotuje — po ponownym zalogowaniu skopiuj świeżą wartość.
+
+[6] Skopiuj link do widgetu nowych wiadomości.<br>
+    W panelu Tipply wejdź w widget alertów/wiadomości i skopiuj jego adres. `receiver_id` to końcówka tego linku — sam UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`), nie cały URL.
+
+[7] Zapisz dane w jednym z dwóch miejsc.<br>
+    **Web UI:** `http://127.0.0.1:26210` → `Setup` → `Tipply` → wklej `receiver_id`, `auth_token`, `cf_clearance`.<br>
+    **Console:** użyj `--login` / `--login-alternative` albo komend `--set-*` z sekcji „Uzyskiwanie danych Tipply” poniżej. `api_key` nie jest ciasteczkiem Tipply — to opcjonalny, własny klucz lokalnego API.
+
+#### Karta: Firefox
+
+[1] Zaloguj się na <a href="https://app.tipply.pl" rel="noreferrer noopener">app.tipply.pl</a>.<br>
+    Pozostaw zalogowaną kartę aktywną.
+
+[2] Otwórz Developer Tools.<br>
+    Naciśnij `Ctrl + Shift + I` na Windows/Linux albo `Cmd + Option + I` na macOS (działa też `F12`).
+
+[3] Przełącz się na zakładkę `Network`.<br>
+    Wpisz w filtrze `app.tipply.pl` lub `api`, a następnie odśwież stronę klawiszem `F5` albo zmień kanał/sekcję.
+
+[4] Kliknij żądanie do `app.tipply.pl/api/...`.<br>
+    Otwórz panel `Headers` i przewiń do `Request Headers`.
+
+[5] Skopiuj `auth_token` i `cf_clearance`.<br>
+    Znajdź nagłówek `Cookie` i skopiuj obie wartości. Alternatywnie: `Storage` → `Cookies` → domena `app.tipply.pl`. Po odnowieniu Cloudflare `cf_clearance` trzeba skopiować ponownie.
+
+[6] Skopiuj link do widgetu nowych wiadomości.<br>
+    `receiver_id` to ostatni element adresu widgetu — UUID. Wklejasz tylko UUID.
+
+[7] Zapisz dane.<br>
+    **Web UI:** `http://127.0.0.1:26210` → `Setup` → `Tipply`.<br>
+    **Console:** zalecane `--login` albo `--login-alternative`; ręcznie według sekcji „Uzyskiwanie danych Tipply” poniżej. `api_key` ustawiasz samodzielnie jako zabezpieczenie lokalnego API, nie pobierasz go z Tipply.
+
+## Uzyskiwanie danych Tipply
+
+- [tipply_ws.rs](./src/clients/tipply_ws.rs) — namespace WebSocket budowany z `receiver_id`.
+- [settings.rs](./src/config/settings.rs) — nazwy kluczy i domyślny `config.ini`.
+
+1. Zaloguj się na <a href="https://app.tipply.pl" rel="noreferrer noopener">app.tipply.pl</a>.
+2. Otwórz konsolę Developer Tools — dokładne kroki dla Twojej przeglądarki są w kartach „Chromium” i „Firefox” powyżej.
+3. W zakładce `Network` wyciągnij z nagłówka `Cookie` wartości `auth_token` i `cf_clearance`. Jeśli nie widzisz nagłówka, użyj zakładki `Application`/`Storage` → `Cookies` dla domeny `app.tipply.pl`.
+4. Skopiuj link do widgetu nowych wiadomości. Z jego końcówki wyciągnij `receiver_id` (sam UUID).
+5. Są do wyboru 2 opcje — zaznacz jedną:
+
+**a) Web UI** — otwórz `http://127.0.0.1:26210` → `Setup` → `Tipply` i podaj:
+
+- `receiver_id` — końcówka UUID z linku widgetu wiadomości,
+- `auth_token`, `cf_clearance` — wartości skopiowane z konsoli przeglądarki,
+- `api_key` — opcjonalnie własny klucz lokalnego API (nie pochodzi z konta Tipply).
+
+**b) Console — forma uniwersalna**
+
+Każdy z poniższych kluczy można zapisać jedną komendą:
+
+```powershell
+.\TipplyConnector-core.exe --set-token auth_token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token se_jwt_token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token receiver_id "WARTOŚĆ"
+```
+
+Analogicznie zapiszesz też:
+
+```powershell
+.\TipplyConnector-core.exe --set-auth-token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-cf-clearance "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-api-key "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-license "WARTOŚĆ"
+```
+
+Dozwolone klucze: `receiver_id`, `cf_clearance`, `auth_token`, `se_channel_id`, `se_jwt_token`, `api_key`, `license_key`.
+
+Sprawdzenie i tryb interaktywny:
+
+```powershell
+.\TipplyConnector-core.exe --status-credentials
+```
+
+Pokazuje:
+
+```text
+  [OK]   se_jwt_token: zapisano
+  [BRAK] cf_clearance: brak
+  ...
+```
+
+Zamiast ręcznego wpisywania w konsoli zalecane:
+
+```powershell
+.\TipplyConnector-core.exe --login               # kreator: otwiera przeglądarkę i pyta po kolei
+.\TipplyConnector-core.exe --login-alternative   # próbuje pobrać tokeny automatycznie przez przeglądarkę
+```
+
+Linux / macOS — te same flagi, tylko bez `.exe`:
+
+```bash
+./TipplyConnector-core --set-receiver-id "UUID"
+./TipplyConnector-core --set-se-jwt "eyJ..."
+./TipplyConnector-core --status-credentials
+```
+
+## Uzyskiwanie danych StreamElements
+
+- [core.rs](./src/bin/core.rs) — flagi `--set-se-*` i `--status-credentials`.
+
+1. Zaloguj się na <a href="https://streamelements.com" rel="noreferrer noopener">streamelements.com</a>.
+2. Naciśnij swój awatar, wybierz `My Account` i przejdź do zakładki `Channels`. Alternatywnie otwórz <a href="https://streamelements.com/dashboard/account/channels" rel="noreferrer noopener">https://streamelements.com/dashboard/account/channels</a>.
+3. Skopiuj w bezpieczne miejsce `Account ID` oraz `JWT Token`.
+4. W zależności od trybu konfiguracji:
+
+**a) Web UI** — `Setup` → `StreamElements`:
+
+- `se_channel_id` = `Account ID`,
+- `se_jwt_token` = `JWT Token`.
+
+**b) Console — forma uniwersalna**
+
+```powershell
+.\TipplyConnector-core.exe --set-token auth_token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token se_jwt_token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token receiver_id "WARTOŚĆ"
+```
+
+Dozwolone klucze: `receiver_id`, `cf_clearance`, `auth_token`, `se_channel_id`, `se_jwt_token`, `api_key`, `license_key`.
+
+Sprawdzenie i tryb interaktywny:
+
+```powershell
+.\TipplyConnector-core.exe --status-credentials
+```
+
+Pokazuje:
+
+```text
+  [OK]   se_jwt_token: zapisano
+  [BRAK] cf_clearance: brak
+  ...
+```
+
+Zamiast ręcznego wpisywania w konsoli zalecane:
+
+```powershell
+.\TipplyConnector-core.exe --login               # kreator: otwiera przeglądarkę i pyta po kolei
+.\TipplyConnector-core.exe --login-alternative   # próbuje pobrać tokeny automatycznie przez przeglądarkę
+```
+
+Linux / macOS — te same flagi, tylko bez `.exe`:
+
+```bash
+./TipplyConnector-core --set-receiver-id "UUID"
+./TipplyConnector-core --set-se-jwt "eyJ..."
+./TipplyConnector-core --status-credentials
+```
+
+## Uwagi
+
+- [guard_protocol.rs](./src/security/guard_protocol.rs) — klucz HMAC wymagany w buildach release.
+- [build.rs](./build.rs) — deadline 90 dni wstawiany w momencie buildu.
+
+- Wydanie jest ważne przez 90 dni od daty zbudowania (`TipplyConnector-core --release-time` pokazuje pozostały czas i deadline).
+- Sekrety są zapisywane w natywnym magazynie systemu, nigdy w `config.ini`.
+- `api_key` zabezpiecza lokalne API aplikacji; pozostaw pusty tylko wtedy, gdy API słucha wyłącznie na `127.0.0.1`.

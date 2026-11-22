@@ -144,6 +144,33 @@ details.faq p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
 .pc>div:first-child{flex-wrap:wrap}
 .meta{font-size:13px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#uzycie[data-br="chromium"] .b-ff,#uzycie[data-br="firefox"] .b-cr,#uzycie[data-mode="web"] .m-con,#uzycie[data-mode="con"] .m-web{display:none}
+.part{font-size:20px;margin:34px 0 14px}
+.danger{display:flex;gap:12px;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.55);border-radius:12px;padding:14px 16px;font-size:14.5px;margin:0 0 14px}
+.danger svg{flex:none;color:var(--red);margin-top:2px}
+.danger b{display:block;color:var(--red);margin-bottom:4px;font-size:15px}
+.picks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 20px;max-width:560px}
+@media(max-width:560px){.picks{grid-template-columns:1fr}}
+.pk{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;font:inherit;transition:.2s}
+.pk b{display:block;font-size:15px}.pk small{color:var(--muted);font-size:12.5px}
+.pk[aria-pressed=true]{border-color:var(--g);box-shadow:0 0 0 3px var(--glow)}
+.tl{list-style:none;margin:0;padding:0;counter-reset:t}
+.tl>li{position:relative;padding:0 0 24px 54px}
+.tl>li::before{counter-increment:t;content:counter(t);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--g);color:#fff;font-weight:800;display:grid;place-items:center}
+.tl>li::after{content:"";position:absolute;left:17px;top:40px;bottom:4px;width:2px;background:var(--line)}
+.tl>li:last-child::after{display:none}
+.tl h4{margin:6px 0 8px;font-size:17px}
+.det{color:var(--muted);font-size:14.5px}
+.det p{margin:0 0 10px}
+.det a{color:var(--blue);text-decoration:underline}
+.det pre{margin:6px 0 12px}
+.det b{color:var(--text)}
+.rec{background:var(--glow);border:1px solid rgba(76,175,80,.4);border-radius:10px;padding:10px 12px;margin:0 0 10px;color:var(--text)}
+.code{position:relative;margin:6px 0 12px}
+.code pre{margin:0;padding:12px 84px 12px 14px;color:var(--text)}
+.cp{position:absolute;top:8px;right:8px;background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:8px;font:600 12px system-ui,sans-serif;padding:5px 10px;cursor:pointer}
+.cp:hover{border-color:var(--g);color:var(--gl)}
+.redtxt{color:var(--red)!important;font-weight:600}
 </style>
 </head>
 <body>
@@ -278,7 +305,7 @@ details.faq p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
     <tr><td>Panel w przeglądarce i lokalne API</td><td><i class="yes" role="img" aria-label="tak"></i></td><td>rozszerzone</td></tr>
     <tr><td>Powiadomienia na pulpicie</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
     <tr><td>Tokeny w sejfie systemu</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
-    <tr><td>Wiele kont Tipply</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Wiele kont Tipply</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
     <tr><td>Reguły: reaguj na nick, kwotę lub treść wpłaty</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
     <tr><td>Ustawienia z poziomu przeglądarki</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
     <tr><td>Dane na żywo dla własnych overlayów i botów</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
@@ -287,6 +314,73 @@ details.faq p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
     </tbody>
   </table></div>
   <p class="note">Ceny netto – VAT zgodnie z prawem kraju użytkownika; mogą się zmieniać. Licencja Pro obejmuje do 2 urządzeń, a licencja Free dla macOS – 1 urządzenie.</p>
+</div></section>
+
+<section id='uzycie' data-br='chromium' data-mode='web'><div class='wrap'>
+  <div class='eyebrow'>Pierwsze użycie</div><h2>Skonfiguruj połączenie krok po kroku</h2>
+  <p class='sub'>Do działania potrzebujesz kilku danych z Tipply i StreamElements. Całość zajmuje kilka minut.</p>
+  <div class='danger'><svg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg><div><b>Nie podawaj tych danych nikomu</b>Tokeny <code>auth_token</code>, <code>cf_clearance</code> i <code>se_jwt_token</code> działają jak hasło do Twoich kont. Osoba nieuprawniona, która je zdobędzie, może przejąć Twoje konto Tipply lub StreamElements. Nie wklejaj ich na czacie, w zgłoszeniach błędów ani na zrzutach ekranu i nie otwieraj narzędzi deweloperskich ani ustawień programu podczas transmisji na żywo. Jeśli dane wyciekły, zmień hasło i wyloguj się ze wszystkich sesji.</div></div>
+  <div class='tip' style='margin:0'><span style='color:var(--blue);flex:none;display:flex'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='16' x2='12' y2='12'/><line x1='12' y1='8' x2='12.01' y2='8'/></svg></span><span>Najprościej: uruchom program z flagą <code>--login</code>. Kreator otworzy przeglądarkę i przeprowadzi Cię przez wszystko. Poniżej znajdziesz też ręczną drogę krok po kroku.</span></div>
+
+  <h3 class='part'>Uzyskiwanie danych Tipply</h3>
+  <div class='picks' data-g='br'><button type='button' class='pk' data-v='chromium' aria-pressed='true'><b>Chromium</b><small>Chrome, Edge, Brave, Opera</small></button><button type='button' class='pk' data-v='firefox' aria-pressed='false'><b>Firefox</b><small>Mozilla Firefox</small></button></div>
+  <ol class='tl'>
+    <li><h4>Zaloguj się do Tipply</h4><div class='det'><p>Wejdź na <a href='https://app.tipply.pl' target='_blank' rel='noopener noreferrer'>app.tipply.pl</a> i zaloguj się na swoje konto.</p></div></li>
+    <li class='b-cr'><h4>Otwórz narzędzia deweloperskie</h4><div class='det'><p>Na stronie app.tipply.pl naciśnij <code>Ctrl + Shift + I</code> (Windows i Linux) lub <code>Cmd + Option + I</code> (macOS). Możesz też nacisnąć <code>F12</code>.</p></div></li>
+    <li class='b-ff'><h4>Otwórz narzędzia deweloperskie</h4><div class='det'><p>Na stronie app.tipply.pl naciśnij <code>Ctrl + Shift + I</code> (Windows i Linux) lub <code>Cmd + Option + I</code> (macOS). Możesz też nacisnąć <code>F12</code>. W Firefoksie panel nazywa się Narzędzia dla deweloperów.</p></div></li>
+    <li class='b-cr'><h4>Znajdź ciasteczka auth_token i cf_clearance</h4><div class='det'><p>Kliknij zakładkę <b>Network</b> (Sieć). W polu filtra wpisz <code>tipply</code>. Jeśli lista jest pusta, odśwież stronę (<code>Ctrl + R</code>) albo kliknij dowolną podstronę.</p><p>Kliknij jedno z żądań do app.tipply.pl, otwórz <b>Headers</b>, przewiń do <b>Request Headers</b> i znajdź pole <b>Cookie</b>. Skopiuj wartości <code>auth_token</code> i <code>cf_clearance</code> (sam ciąg po znaku <code>=</code>, bez średnika).</p><p>Nie widzisz pola Cookie? Otwórz zakładkę <b>Application</b>, potem <b>Storage → Cookies → https://app.tipply.pl</b> i skopiuj kolumnę <b>Value</b> przy obu ciasteczkach.</p></div></li>
+    <li class='b-ff'><h4>Znajdź ciasteczka auth_token i cf_clearance</h4><div class='det'><p>Kliknij zakładkę <b>Network</b> (Sieć) i odśwież stronę (<code>F5</code>) albo kliknij dowolną podstronę.</p><p>Kliknij żądanie do app.tipply.pl, otwórz <b>Headers</b>, przewiń do <b>Request Headers</b> i znajdź pole <b>Cookie</b>. Skopiuj wartości <code>auth_token</code> i <code>cf_clearance</code> (sam ciąg po znaku <code>=</code>, bez średnika).</p><p>Nie widzisz pola Cookie? Otwórz zakładkę <b>Storage</b>, potem <b>Cookies → https://app.tipply.pl</b> i skopiuj kolumnę <b>Value</b> przy obu ciasteczkach.</p></div></li>
+    <li><h4>Skopiuj link do widgetu nowych wiadomości</h4><div class='det'><p>W panelu Tipply otwórz widget nowych wiadomości (alertów) i skopiuj jego link. Z linku wyciągniemy Twoje ID: to końcówka adresu, czyli UUID w postaci <code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>. To jest Twój <code>receiver_id</code>.</p><p class='redtxt'>Traktuj link widgetu jako tajny.</p></div></li>
+    <li><h4>Wpisz dane w programie</h4><div class='det'>
+      <p>Wybierz, jak chcesz je wprowadzić:</p>
+      <div class='picks' data-g='mode'><button type='button' class='pk' data-v='web' aria-pressed='true'><b>Web UI</b><small>Setup w panelu w przeglądarce</small></button><button type='button' class='pk' data-v='con' aria-pressed='false'><b>Konsola</b><small>komendy w terminalu</small></button></div>
+      <div class='m-web'>
+        <p>Otwórz panel programu w przeglądarce (domyślnie <code>http://127.0.0.1:26210</code>) i przejdź do <b>Setup → Tipply</b>. Wpisz:</p>
+        <p><code>receiver_id</code> – końcówka linku z kroku 4,<br><code>cf_clearance</code> i <code>auth_token</code> – wartości z kroku 3.</p>
+        <p>Kliknij <b>Zapisz ustawienia</b>. W zakładce <b>Onboard</b> możesz też wkleić cały link widgetu, a ID wyciągnie się samo.</p>
+      </div>
+      <div class='m-con'>
+        <div class='rec'><b>Zalecane:</b> uruchom program z flagą <code>--login</code> lub <code>--login-alternative</code>.</div>
+        <div class='code'><pre>.\TipplyConnector-core.exe --login               # kreator: otwiera przeglądarkę i pyta po kolei
+.\TipplyConnector-core.exe --login-alternative   # próbuje pobrać tokeny automatycznie przez przeglądarkę</pre><button type='button' class='cp'>Kopiuj</button></div>
+        <p>Wolisz ręcznie? Każdy klucz zapiszesz jedną komendą (Windows):</p>
+        <div class='code'><pre>.\TipplyConnector-core.exe --set-token auth_token "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token cf_clearance "WARTOŚĆ"
+.\TipplyConnector-core.exe --set-token receiver_id "WARTOŚĆ"</pre><button type='button' class='cp'>Kopiuj</button></div>
+        <p>Dozwolone klucze: <code>receiver_id</code>, <code>cf_clearance</code>, <code>auth_token</code>, <code>se_channel_id</code>, <code>se_jwt_token</code>, <code>api_key</code>, <code>license_key</code>.</p>
+        <p><b>Linux i macOS:</b> te same flagi, tylko bez <code>.exe</code>:</p>
+        <div class='code'><pre>./TipplyConnector-core --set-receiver-id "UUID"</pre><button type='button' class='cp'>Kopiuj</button></div>
+        <p>Sprawdź, co jest zapisane:</p>
+        <div class='code'><pre>.\TipplyConnector-core.exe --status-credentials     # Linux i macOS: ./TipplyConnector-core --status-credentials</pre><button type='button' class='cp'>Kopiuj</button></div>
+        <pre>[OK]   se_jwt_token: zapisano
+[BRAK] cf_clearance: brak
+...</pre>
+      </div>
+    </div></li>
+  </ol>
+
+  <h3 class='part'>Uzyskiwanie danych StreamElements</h3>
+  <ol class='tl'>
+    <li><h4>Zaloguj się do StreamElements</h4><div class='det'><p>Wejdź na <a href='https://streamelements.com' target='_blank' rel='noopener noreferrer'>streamelements.com</a> i zaloguj się na swoje konto.</p></div></li>
+    <li><h4>Przejdź do zakładki Channels</h4><div class='det'><p>Kliknij swój awatar, wybierz <b>My Account</b> i przejdź do zakładki <b>Channels</b>. Możesz też wejść prosto na <a href='https://streamelements.com/dashboard/account/channels' target='_blank' rel='noopener noreferrer'>streamelements.com/dashboard/account/channels</a>.</p></div></li>
+    <li><h4>Skopiuj Account ID i JWT Token</h4><div class='det'><p>Skopiuj w bezpieczne miejsce dwie wartości: <b>Account ID</b> i <b>JWT Token</b> (token może być ukryty za przyciskiem <b>Show secrets</b>).</p><p class='redtxt'>JWT Token działa jak hasło do Twojego kanału. Nie pokazuj go na streamie ani na zrzutach ekranu.</p></div></li>
+    <li><h4>Wpisz dane w programie</h4><div class='det'>
+      <div class='picks' data-g='mode'><button type='button' class='pk' data-v='web' aria-pressed='true'><b>Web UI</b><small>Setup w panelu w przeglądarce</small></button><button type='button' class='pk' data-v='con' aria-pressed='false'><b>Konsola</b><small>komendy w terminalu</small></button></div>
+      <div class='m-web'>
+        <p>W panelu programu przejdź do <b>Setup → StreamElements</b> i wpisz:</p>
+        <p><code>se_channel_id</code> – to Account ID,<br><code>se_jwt_token</code> – to JWT Token.</p>
+        <p>Kliknij <b>Zapisz ustawienia</b>.</p>
+      </div>
+      <div class='m-con'>
+        <div class='rec'><b>Zalecane:</b> <code>--login</code> lub <code>--login-alternative</code> (opisane w kroku 5 sekcji Tipply). Możesz też zapisać klucze ręcznie (Windows):</div>
+        <div class='code'><pre>.\TipplyConnector-core.exe --set-token se_channel_id "ACCOUNT_ID"
+.\TipplyConnector-core.exe --set-token se_jwt_token "JWT_TOKEN"</pre><button type='button' class='cp'>Kopiuj</button></div>
+        <p><b>Linux i macOS:</b> te same flagi, tylko bez <code>.exe</code>:</p>
+        <div class='code'><pre>./TipplyConnector-core --set-se-jwt "eyJ..."</pre><button type='button' class='cp'>Kopiuj</button></div>
+      </div>
+    </div></li>
+    <li><h4>Sprawdź połączenie</h4><div class='det'><p>W trybie konsoli uruchom <code>--status-credentials</code>. Przy zapisanych kluczach zobaczysz <code>[OK]</code>. W panelu, w zakładce <b>Onboard</b>, możesz też wysłać alert testowy.</p></div></li>
+  </ol>
 </div></section>
 
 <section id="pobierz"><div class="wrap">
@@ -375,6 +469,25 @@ details.faq p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
     });
   });
   render('sub');
+})();
+</script>
+<script>
+(function(){
+  var sec=document.getElementById('uzycie');
+  document.querySelectorAll('.picks').forEach(function(g){
+    g.addEventListener('click',function(e){
+      var b=e.target.closest('.pk');if(!b)return;
+      var k=g.getAttribute('data-g'),v=b.getAttribute('data-v');
+      sec.setAttribute('data-'+k,v);
+      document.querySelectorAll('.picks[data-g="'+k+'"] .pk').forEach(function(x){x.setAttribute('aria-pressed',x.getAttribute('data-v')===v?'true':'false');});
+    });
+  });
+  sec.addEventListener('click',function(e){
+    var b=e.target.closest('.cp');if(!b)return;
+    var t=b.parentElement.querySelector('pre').textContent;
+    try{navigator.clipboard.writeText(t);}catch(x){}
+    b.textContent='Skopiowano';setTimeout(function(){b.textContent='Kopiuj';},1400);
+  });
 })();
 </script>
 </body>
