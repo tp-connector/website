@@ -5,10 +5,16 @@
 Strona projektu: <a href="https://tp-connector.vercel.app/" rel="noreferrer noopener">https://tp-connector.vercel.app/</a><br>
 Adres alternatywny: <a href="https://tp-connector.kbdev.run/" rel="noreferrer noopener">https://tp-connector.kbdev.run/</a>
 
+## Audyty
+
+- [PRIVACY_AUDIT.md](https://github.com/tp-connector/releases/blob/main/PRIVACY_AUDIT.md) — audyt prywatności wydania `1.0.0-2` (2026-11-22): przepływy danych, magazyn sekretów, telemetria i retencja.
+- [SECURITY_AUDIT.md](https://github.com/tp-connector/releases/blob/main/SECURITY_AUDIT.md) — audyt bezpieczeństwa wydania `1.0.0-2` (2026-11-22): integralność paczek, pinning TLS, mechanizmy anty-tamper i powierzchnia ataku.
+
+Oba raporty powstały na podstawie statycznej analizy 18 archiwów ZIP (Free/Pro × Windows/macOS/Linux); nie uruchomiono żadnej binarki.
+
 ## Jak uruchomić
 
-- [llms.txt](./llms.txt) — ten przewodnik.
-- [build.yml](./.github/workflows/build.yml) — workflow podpisujący i weryfikujący wydania.
+- [Strona projektu](https://tp-connector.vercel.app/) — wydania i dokumentacja.
 
 1. Rozpakuj archiwum wydania (`TipplyConnector-<wersja>-<edycja>-<target>.zip`) i wejdź do powstałego katalogu.
 2. Raz zapisz sekrety w natywnym magazynie systemu (Windows Credential Manager, macOS Keychain, Linux Secret Service/keyutils), używając `TipplyConnector-core` (na Unixie `./TipplyConnector-core`):
@@ -21,9 +27,11 @@ Adres alternatywny: <a href="https://tp-connector.kbdev.run/" rel="noreferrer no
 3. Uruchom launcher: `TipplyConnector.exe` na Windowsie albo `./TipplyConnector` na macOS/Linux. Launcher weryfikuje podpis i uruchamia `TipplyConnector-core`.
 4. Otwórz `http://127.0.0.1:26210`, aby zobaczyć interfejs i dokumentację API. `config.ini` jest generowany świeżo: `api = on`, puste `websocket_url`, bez sekretów.
 
+Pełną listę dostępnych flag i komend pokaże `TipplyConnector --help` — na Windowsie `.\TipplyConnector  --help`, na macOS/Linux `./TipplyConnector --help`.
+
 ## Porównanie funkcji
 
-- [Cargo.toml](./Cargo.toml) — flagi `default` i `premium` definiujące edycje Free/Pro.
+- [Strona projektu](https://tp-connector.vercel.app/) — porównanie edycji Free i Pro.
 
 - Free: relay Tipply → StreamElements, lokalne API/Web UI, deduplikacja, podpisane wydanie.
 - Pro: wszystko z Free oraz licencja Creem, `multi_user` i rozszerzone logowanie automatyczne.
@@ -84,8 +92,7 @@ Adres alternatywny: <a href="https://tp-connector.kbdev.run/" rel="noreferrer no
 
 ## Uzyskiwanie danych Tipply
 
-- [tipply_ws.rs](./src/clients/tipply_ws.rs) — namespace WebSocket budowany z `receiver_id`.
-- [settings.rs](./src/config/settings.rs) — nazwy kluczy i domyślny `config.ini`.
+- [app.tipply.pl](https://app.tipply.pl) — panel, z którego pobierane są dane konta i widgetu.
 
 1. Zaloguj się na <a href="https://app.tipply.pl" rel="noreferrer noopener">app.tipply.pl</a>.
 2. Otwórz konsolę Developer Tools — dokładne kroki dla Twojej przeglądarki są w kartach „Chromium” i „Firefox” powyżej.
@@ -151,7 +158,7 @@ Linux / macOS — te same flagi, tylko bez `.exe`:
 
 ## Uzyskiwanie danych StreamElements
 
-- [core.rs](./src/bin/core.rs) — flagi `--set-se-*` i `--status-credentials`.
+- [streamelements.com](https://streamelements.com) — panel konta, z którego pobierane są dane integracji.
 
 1. Zaloguj się na <a href="https://streamelements.com" rel="noreferrer noopener">streamelements.com</a>.
 2. Naciśnij swój awatar, wybierz `My Account` i przejdź do zakładki `Channels`. Alternatywnie otwórz <a href="https://streamelements.com/dashboard/account/channels" rel="noreferrer noopener">https://streamelements.com/dashboard/account/channels</a>.
@@ -204,8 +211,7 @@ Linux / macOS — te same flagi, tylko bez `.exe`:
 
 ## Uwagi
 
-- [guard_protocol.rs](./src/security/guard_protocol.rs) — klucz HMAC wymagany w buildach release.
-- [build.rs](./build.rs) — deadline 90 dni wstawiany w momencie buildu.
+- [Audyt bezpieczeństwa](https://github.com/tp-connector/releases/blob/main/SECURITY_AUDIT.md) — szczegóły zabezpieczeń i ograniczeń wydania.
 
 - Wydanie jest ważne przez 90 dni od daty zbudowania (`TipplyConnector-core --release-time` pokazuje pozostały czas i deadline).
 - Sekrety są zapisywane w natywnym magazynie systemu, nigdy w `config.ini`.
