@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TipplyConnector</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234caf50'/%3E%3Cpolygon points='13 4 6 13.5 11.5 13.5 10.5 20 18 10.5 12.5 10.5 13 4' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#111;--card:#1c1c1c;--text:#eee;--muted:#aaa;--line:#2c2c2c;--g:#4caf50;--gd:#1b5e20;--gl:#a5d6a7;--blue:#90caf9;--orange:#ffcc80;--violet:#ce93d8;--red:#ef9a9a;--glow:rgba(76,175,80,.15);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#f4faf4;--card:#fff;--text:#0b0f0e;--muted:#555;--line:#e0e0e0;--gl:#1b5e20;--blue:#1565c0;--orange:#ef6c00;--violet:#8e24aa;--red:#c62828;color-scheme:light}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Roboto,sans-serif;line-height:1.55;transition:background .2s,color .2s}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:linear-gradient(90deg,#1b5e20,#4caf50);z-index:30}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+code{background:rgba(127,127,127,.18);border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:.9em}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(90deg,#1b5e20,#4caf50);color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.bar{display:flex;align-items:center;gap:18px;height:62px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.logo i{font-style:normal;width:30px;height:30px;border-radius:9px;background:#fff;color:#1b5e20;display:grid;place-items:center;font-size:16px}
+nav{display:flex;gap:6px;margin-left:12px}
+nav a{padding:8px 13px;border-radius:12px;font-size:14px;background:rgba(255,255,255,.12);transition:.2s}
+nav a:hover{background:#fff;color:#1b5e20}
+.right{margin-left:auto;display:flex;gap:10px;align-items:center}
+.ibtn{background:rgba(255,255,255,.15);border:0;color:#fff;width:38px;height:38px;border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 22px;font-weight:700;font-size:15px;border:0;cursor:pointer;transition:.2s}
+.btn.p{background:var(--g);color:#fff;box-shadow:0 8px 24px rgba(76,175,80,.35)}
+.btn.p:hover{background:var(--gd);transform:translateY(-1px)}
+.btn.s{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.s:hover{border-color:var(--g);color:var(--gl)}
+header .btn.p{background:#fff;color:#1b5e20;padding:8px 16px;font-size:14px;box-shadow:none}
+@media(max-width:760px){nav{display:none}}
+.hero{padding:76px 0 56px;background:radial-gradient(700px 360px at 80% 0,var(--glow),transparent 70%),radial-gradient(500px 300px at 0 30%,rgba(33,150,243,.1),transparent 70%)}
+.hgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+@media(max-width:900px){.hgrid{grid-template-columns:1fr}}
+.pill{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;background:var(--glow);color:var(--gl);border:1px solid rgba(76,175,80,.35)}
+.pill b{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g)}
+h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;margin:18px 0;letter-spacing:-.03em}
+h1 span{background:linear-gradient(90deg,var(--gl),#4caf50 55%,#2196f3);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:18px;color:var(--muted);max-width:520px;margin:0 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
+.stats b{display:block;font-size:22px;color:var(--gl)}
+.stats small{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.mock{display:flex;flex-direction:column;gap:10px;position:relative}
+.al{background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--g);border-radius:14px;padding:12px 14px}
+.al.t{border-left-color:#ef6c00}.al.r{border-left-color:#8e24aa}.al.e{border-left-color:#e53935}
+.al .h{display:flex;align-items:center;gap:10px}
+.al .n{font-weight:700;flex:1}.al .n small{display:block;font-weight:400;font-family:Consolas,monospace;font-size:12px;color:var(--muted)}
+.al .a{font-weight:800;font-size:18px}.al .a small{font-size:12px;color:var(--muted)}
+.al .m{margin-top:8px;font-size:14px;background:rgba(76,175,80,.1);padding:7px 11px;border-radius:10px}
+.badge{font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;margin-left:6px;background:rgba(127,127,127,.2);color:var(--muted)}
+.badge.t{background:rgba(239,108,0,.2);color:var(--orange)}.badge.e{background:rgba(229,57,53,.2);color:var(--red)}.badge.r{background:rgba(142,36,170,.22);color:var(--violet)}
+.rf{width:34px;height:34px;border-radius:10px;background:#2196f3;display:grid;place-items:center;color:#fff}
+.rf.v{background:#8e24aa}
+section{padding:64px 0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g)}
+h2{font-size:clamp(26px,3.6vw,38px);margin:8px 0 10px;letter-spacing:-.02em}
+.sub{color:var(--muted);max-width:620px;margin:0 0 34px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.f{transition:.2s}.f:hover{transform:translateY(-3px);border-color:var(--g)}
+.ico{width:42px;height:42px;border-radius:12px;background:var(--glow);display:grid;place-items:center;color:var(--gl);margin-bottom:12px}
+.f h3{margin:0 0 6px;font-size:17px}.f p{margin:0;color:var(--muted);font-size:14.5px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;font-weight:800;margin-bottom:12px}
+.step h3{margin:0 0 6px}.step p{margin:0;color:var(--muted);font-size:14.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+@media(max-width:860px){.two{grid-template-columns:1fr}}
+.wf{display:flex;flex-direction:column;gap:8px}
+.ab{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.ab .st{width:24px;height:24px;border-radius:50%;background:var(--glow);color:var(--gl);font-size:12px;font-weight:700;display:grid;place-items:center;flex:none}
+.ab span.d{flex:1;font-size:14px}.ab span.d small{display:block;color:var(--muted);font-size:12px}
+.mt{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.GET{background:rgba(46,125,50,.25);color:#a5d6a7}.POST{background:rgba(230,81,0,.25);color:#ffcc80}.PUT{background:rgba(21,101,192,.3);color:#90caf9}.TAG{background:rgba(123,31,162,.3);color:#ce93d8}
+:root[data-theme="light"] .GET{color:#2e7d32}:root[data-theme="light"] .POST{color:#e65100}:root[data-theme="light"] .PUT{color:#1565c0}:root[data-theme="light"] .TAG{color:#7b1fa2}
+pre{margin:0;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;background:rgba(127,127,127,.12);padding:14px;border-radius:12px}
+.k{color:#2196f3}.s{color:#4caf50}.n{color:#ff9800}.b{color:#9c27b0}
+.tip{display:flex;gap:12px;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.35);border-radius:12px;padding:12px 14px;font-size:14px;margin-top:14px}
+.cta-box{text-align:center;background:linear-gradient(135deg,#1b5e20,#4caf50);color:#fff;border-radius:24px;padding:52px 24px;box-shadow:0 20px 50px rgba(76,175,80,.25)}
+.cta-box h2{margin:0 0 8px}.cta-box p{margin:0 auto 24px;max-width:520px;opacity:.9}
+.cta-box .btn.p{background:#fff;color:#1b5e20;box-shadow:none}
+.cta-box .btn.s{color:#fff;border-color:rgba(255,255,255,.55)}
+footer{padding:30px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.band{background:var(--card);border-block:1px solid var(--line);padding:18px 0}
+.band .wrap{display:flex;justify-content:space-around;gap:10px 28px;flex-wrap:wrap;font-weight:800;font-size:clamp(15px,2.1vw,20px);letter-spacing:-.01em}
+.band span{color:var(--muted)}.band b{color:var(--gl)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}}@media(max-width:600px){.g4{grid-template-columns:1fr}}
+.big{font-size:30px;font-weight:800;color:var(--gl);letter-spacing:-.02em}
+.note{font-size:12.5px;color:var(--muted);margin:14px 0 0}
+.pt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+.pt th,.pt td{padding:12px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.pt th:first-child,.pt td:first-child{text-align:left}
+.pt th{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pt th small{color:var(--g);text-transform:none;letter-spacing:0;margin-left:4px}
+.pt tr:last-child td{border-bottom:0}.pt .price td{font-weight:800;color:var(--gl)}
+.yes,.no{display:inline-block;width:18px;height:18px;vertical-align:middle;background-repeat:no-repeat;background-position:center;background-size:contain}
+.yes{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234caf50' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E")}
+.no{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3' stroke-linecap='round'%3E%3Cline x1='6' y1='12' x2='18' y2='12'/%3E%3C/svg%3E")}
+.faqs{max-width:820px}
+details.faq{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 18px;margin-bottom:10px;transition:border-color .2s}
+details.faq[open]{border-color:var(--g)}
+details.faq summary{cursor:pointer;font-weight:700;padding:16px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--g);border-bottom:2px solid var(--g);transform:rotate(45deg);transition:.2s;flex:none;margin-top:6px}
+details.faq[open] summary::after{transform:rotate(-135deg);margin-top:10px}
+details.faq p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
+.vs-title{margin:36px 0 4px;font-size:20px}
+.vsg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:800px){.vsg{grid-template-columns:1fr}}
+.vs{display:flex;flex-direction:column;gap:14px}
+.vs-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}
+.chip2{font-style:normal;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--glow);color:var(--gl);white-space:nowrap}
+.vs-r{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.vs-r b{font-size:16px;color:var(--text)}
+.vs-r .bar{grid-column:1/-1;height:10px;border-radius:6px;background:rgba(127,127,127,.18);overflow:hidden}
+.vs-r .fill{display:block;height:100%;border-radius:6px;background:#777}
+.vs-r.me{color:var(--text);font-weight:700}
+.vs-r.me .fill{background:linear-gradient(90deg,#1b5e20,#4caf50)}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin:0 0 20px}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:9px 18px;border-radius:9px;cursor:pointer;transition:.2s}
+.seg button[aria-selected=true]{background:var(--g);color:#fff}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+@media(max-width:900px){.pg{grid-template-columns:1fr}}
+.pc{display:flex;flex-direction:column;gap:10px}
+.pc.hl{border-color:var(--g);box-shadow:0 0 0 1px var(--g),0 10px 30px rgba(76,175,80,.15)}
+.pc h3{margin:0;font-size:17px}
+.pc p{margin:0;color:var(--muted);font-size:14px;flex:1}
+.pp b{font-size:34px;letter-spacing:-.02em}.pp small{color:var(--muted);margin-left:4px;font-weight:600}
+.pbadge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--glow);color:var(--gl);white-space:nowrap}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;font-weight:600;padding:10px 0;border-top:1px solid var(--line)}
+.sw small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.ios{-webkit-appearance:none;appearance:none;width:40px;height:22px;border-radius:6px;background:#777;position:relative;cursor:pointer;transition:.2s;flex:none;margin:0}
+.ios::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:18px;border-radius:4px;background:#fff;transition:.2s}
+.ios:checked{background:var(--g)}.ios:checked::after{left:20px}
+.ios:disabled{opacity:.4;cursor:not-allowed}
+.pc .btn{justify-content:center}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.pc>div:first-child{flex-wrap:wrap}
+.meta{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a href="#top" class="logo"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></i>TipplyConnector</a>
+    <nav><a href="#funkcje">Funkcje</a><a href="#platformy">Platformy</a><a href="#start">Start</a><a href="#workflow">Workflow</a><a href="#multi">Multi-user</a><a href="#plany">Plany</a><a href="#faq">FAQ</a></nav>
+    <div class="right">
+      <button class="ibtn" id="theme" title="Motyw" aria-label="Zmień motyw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <a class="btn p" href="#pobierz">Zacznij</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero"><div class="wrap hgrid">
+  <div>
+    <span class="pill"><b></b>Windows · macOS · Linux · Intel i ARM</span>
+    <h1>Alerty z Tipply, które <span>po prostu działają</span></h1>
+    <p class="lead">Każdy tip od widza, który od razu się pojawi na Twoim streamie, bez dublowania i kombinowania. TipplyConnector to unikalne narzędzie, które łączy Tipply z StreamElements, a Ty możesz się spokojnie skupić na grze czy rozmowie z czatem.</p>
+    <div class="cta"><a class="btn p" href="#plany">Pobierz Free</a><a class="btn s" href="#platformy">Obsługiwane systemy</a></div>
+    <div class="stats"><div><b>Bez dubli</b><small>jeden tip = jeden alert</small></div><div><b>~4 MB</b><small>RAM, prawie niewidoczny w tle</small></div><div><b>~2 s</b><small>i jest gotowy do startu</small></div></div>
+  </div>
+  <div class="card mock" aria-hidden="true">
+    <div class="al"><div class="h"><div class="n">Niko<span class="badge">wysłano</span><small>9fbf4dcd-79e4-476b…</small></div><div class="a">100.00 <small>PLN</small></div><div class="rf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div></div><div class="m">UWAGA WAAA RAKIETA!!</div></div>
+    <div class="al r"><div class="h"><div class="n">Julcia<span class="badge r">odświeżony</span><small>2ce7e7af-bc65-4c98…</small></div><div class="a">1.00 <small>PLN</small></div><div class="rf v"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div></div></div>
+    <div class="al t"><div class="h"><div class="n">Test<span class="badge t">TEST</span><small>6d139d21-d4ef-40fd…</small></div><div class="a">13.00 <small>PLN</small></div><div class="rf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div></div></div>
+    <div class="al e"><div class="h"><div class="n">Julcia<span class="badge e">BŁĄD</span><small>4090cc57-9cd9-48c4…</small></div><div class="a">1.00 <small>PLN</small></div><div class="rf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div></div></div>
+  </div>
+</div></div>
+
+<div class="band"><div class="wrap"><span>Twój tip.</span><span>Twój alert.</span><span>Twój <b>StreamElements.</b></span></div></div>
+
+<section id="funkcje"><div class="wrap">
+  <div class="eyebrow">Funkcje</div><h2>Wszystko, czego potrzebuje streamer</h2>
+  <p class="sub">Od prostego przekazywania alertów po rozbudowane scenariusze – w jednym panelu.</p>
+  <div class="grid">
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><h3>Lista alertów</h3><p>Wszystkie wpłaty w jednym miejscu: znajdź darczyńcę po nicku lub kwocie i wyślij alert ponownie jednym kliknięciem.</p></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Blokada duplikatów</h3><p>Ten sam tip nie wyświetli się na streamie dwa razy, nawet po ponownym uruchomieniu programu.</p></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div><h3>Makra i reguły <small>(Pro)</small></h3><p>Duży tip? Włącz światło na biurku, odpal dźwięk albo własną akcję. Ustaw regułę raz, resztę zrobi program.</p></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Multi-user</h3><p>Streamujecie razem? Jeden program obsłuży kilka kont Tipply, a alerty trafią na wspólny kanał.</p></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><h3>Panel w przeglądarce</h3><p>Wygodny panel do podglądu wpłat i ustawień. Dla bardziej zaawansowanych jest też lokalne API.</p></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><h3>Powiadomienia na pulpicie</h3><p>Widzisz każdy tip także na pulpicie, a historia wiadomości zostaje u Ciebie na komputerze.</p></div>
+  </div>
+</div></section>
+
+<section id="dlaczego"><div class="wrap">
+  <div class="eyebrow">Dlaczego TipplyConnector</div><h2>Lekko. Szybko. Bezpiecznie.</h2>
+  <p class="sub">Działa cicho w tle i robi jedno: dostarcza tipy na Twój stream. Jest tak lekki, że prawie go nie zauważysz.</p>
+  <div class="grid g4">
+    <div class="card"><div class="big">~4 MB</div><h3 style="margin:4px 0 6px;font-size:16px">Lekki jak piórko</h3><p style="margin:0;color:var(--muted);font-size:14px">Tyle pamięci zajmuje w Menedżerze zadań, gdy czeka na tipy. Zostaje więcej dla gry i OBS-a.</p></div>
+    <div class="card"><div class="big">~2 s</div><h3 style="margin:4px 0 6px;font-size:16px">Szybki start</h3><p style="margin:0;color:var(--muted);font-size:14px">Włączasz i po chwili jest gotowy do pracy, bez długiego czekania przed streamem.</p></div>
+    <div class="card"><div class="big">Sejf</div><h3 style="margin:4px 0 6px;font-size:16px">Tokeny w sejfie systemu</h3><p style="margin:0;color:var(--muted);font-size:14px">Hasła i tokeny trafiają do magazynu poświadczeń systemu, a nie w zwykłym pliku, który łatwo pokazać przez przypadek na streamie.</p></div>
+    <div class="card"><div class="big">Podpis</div><h3 style="margin:4px 0 6px;font-size:16px">Podpisane wydanie</h3><p style="margin:0;color:var(--muted);font-size:14px">Przy starcie program sprawdza, czy jego pliki są oryginalne i nie zostały podmienione.</p></div>
+  </div>
+  <h3 class="vs-title">TipplyConnector kontra alternatywa</h3>
+  <p class="sub" style="margin-bottom:18px">Te same warunki, te same pomiary. Porównaliśmy się z darmowym projektem tipply-bridge v1.1.</p>
+  <div class="vsg">
+    <div class="card vs"><div class="vs-h"><span>Zużycie pamięci</span><i class="chip2">≈ 9× mniej</i></div>
+      <div class="vs-r me"><span>TipplyConnector</span><b>~4 MB</b><div class="bar"><span class="fill" style="width:11%"></span></div></div>
+      <div class="vs-r"><span>tipply-bridge v1.1</span><b>~37 MB</b><div class="bar"><span class="fill" style="width:100%"></span></div></div></div>
+    <div class="card vs"><div class="vs-h"><span>Czas startu</span><i class="chip2">≈ 3× szybciej</i></div>
+      <div class="vs-r me"><span>TipplyConnector</span><b>~1,9 s</b><div class="bar"><span class="fill" style="width:33%"></span></div></div>
+      <div class="vs-r"><span>tipply-bridge v1.1</span><b>~5,4–6,1 s</b><div class="bar"><span class="fill" style="width:100%"></span></div></div></div>
+    <div class="card vs"><div class="vs-h"><span>Rozmiar na dysku</span><i class="chip2">≈ 3× mniej</i></div>
+      <div class="vs-r me"><span>TipplyConnector</span><b>≈ 8 MB</b><div class="bar"><span class="fill" style="width:32%"></span></div></div>
+      <div class="vs-r"><span>tipply-bridge v1.1</span><b>25,3 MB</b><div class="bar"><span class="fill" style="width:100%"></span></div></div></div>
+  </div>
+  <p class="note">Pomiary własne: Windows, stan spoczynku, 15.11.2026. RAM wg Menedżera zadań (prywatny working set). Start: czas do odpowiedzi API (TipplyConnector) i do pojawienia się okna (tipply-bridge), więc kryteria są różne. Pod obciążeniem wartości będą wyższe u obu programów. tipply-bridge to darmowy projekt open source z gotowym kreatorem i ikoną w zasobniku – TipplyConnector stawia na lekkość, historię wiadomości, blokadę dubli i automatyzację.</p>
+</div></section>
+
+<section id="platformy"><div class="wrap">
+  <div class="eyebrow">Platformy</div><h2>Windows, macOS i Linux. Intel, AMD i ARM.</h2>
+  <p class="sub">Jeden program na każdy sprzęt: od zwykłego PC, przez MacBooka z Apple Silicon, po mały komputer z Linuksem. Wersje Free i Pro są dostępne na te same systemy i architektury.</p>
+  <div class="grid">
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></div><h3>Windows</h3><p>Dla komputerów z procesorami Intel i AMD oraz ARM.</p><div class="chips"><i class="chip2">x64</i><i class="chip2">ARM64</i></div></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><h3>macOS</h3><p>Dla starszych Maców z Intelem i nowych z Apple Silicon.</p><div class="chips"><i class="chip2">Intel (x86_64)</i><i class="chip2">Apple Silicon (ARM64)</i></div></div>
+    <div class="card f"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><h3>Linux</h3><p>Dla komputerów, serwerów i małych urządzeń, także w wersjach glibc i musl.</p><div class="chips"><i class="chip2">x86_64</i><i class="chip2">ARM64</i><i class="chip2">ARMv7 (np. Raspberry Pi 32-bit)</i></div></div>
+  </div>
+  <p class="note">Paczki do pobrania mają ok. 4–5 MB. Pro z obsługą macOS działa także na Windowsie i Linuksie. Licencja Pro: do 2 urządzeń, licencja Free dla macOS: 1 urządzenie.</p>
+</div></section>
+
+<section id="start"><div class="wrap">
+  <div class="eyebrow">Szybki start</div><h2>Gotowe w trzech krokach</h2>
+  <p class="sub">Kreator konfiguracji przeprowadzi Cię przez wszystko – w kilka minut.</p>
+  <div class="steps">
+    <div class="card step"><h3>Połącz Tipply</h3><p>Wklej link do widgetu alertów – ID wyciągniemy za Ciebie. Tokeny ustawisz komendą <code>--login</code>.</p></div>
+    <div class="card step"><h3>Połącz StreamElements</h3><p>Podaj Channel ID oraz token JWT. Traktuj token jak hasło.</p></div>
+    <div class="card step"><h3>Wyślij alert testowy</h3><p>Sprawdź, czy wszystko działa, i zostaw aplikację w zasobniku.</p></div>
+  </div>
+</div></section>
+
+<section id="workflow"><div class="wrap two">
+  <div>
+    <div class="eyebrow">Workflow · Pro</div><h2>Reaguj na wpłaty automatycznie</h2>
+    <p class="sub" style="margin-bottom:14px">Ustaw, co ma się wydarzyć po wpłacie: wiadomość na Discordzie, zmiana światła, dźwięk. Wystarczy wybrać warunki, np. minimalną kwotę lub słowo w wiadomości.</p>
+    
+  </div>
+  <div class="card wf">
+    <div class="ab"><span class="st">1</span><span class="d">Powitanie na Discordzie<small>kwota od 10</small></span><span class="mt POST">POST</span></div>
+    <div class="ab"><span class="st">2</span><span class="d">Odśwież widget<small>każda wpłata</small></span><span class="mt GET">GET</span></div>
+    <div class="ab"><span class="st">3</span><span class="d">Zmień stan lampki<small>wiadomość zawiera „rakieta”</small></span><span class="mt PUT">PUT</span></div>
+    <div class="ab"><span class="st">4</span><span class="d">Dopisz #tag na początku<small>bez żądania HTTP</small></span><span class="mt TAG">TAG</span></div>
+  </div>
+</div></section>
+
+<section id="multi"><div class="wrap">
+  <div class="eyebrow">Multi-user</div><h2>Jedna instancja, wiele kont</h2>
+  <p class="sub">Dodaj kolejne konta Tipply i przypisz każdemu własny tag. Program na bieżąco sprawdza, czy dane są poprawne, a tag może pojawiać się w wiadomości alertu.</p>
+  <div class="grid">
+    <div class="card"><b>#milosz</b><br><small style="color:var(--muted)">[milosz_user]</small><div style="margin-top:8px"><span class="badge" style="background:rgba(76,175,80,.2);color:var(--gl)">OK</span></div></div>
+    <div class="card"><b>#anna</b><br><small style="color:var(--muted)">[anna_user]</small><div style="margin-top:8px"><span class="badge" style="background:rgba(76,175,80,.2);color:var(--gl)">OK</span></div></div>
+    <div class="card"><b>Nowy użytkownik</b><br><small style="color:var(--muted)">[…_user]</small><div style="margin-top:8px"><span class="badge e">Do poprawy</span></div></div>
+  </div>
+  <div class="tip"><span style="color:var(--blue);flex:none;display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span>Po dodaniu lub zmianie użytkowników uruchom program ponownie.</span></div>
+</div></section>
+
+<section id="plany"><div class="wrap">
+  <div class="eyebrow">Plany</div><h2>Free do podstaw. Pro do automatyzacji.</h2>
+  <p class="sub">Free daje wszystko, czego potrzebuje większość streamerów. Pro dodaje automatyzację i wygodę.</p>
+  <div class="seg" role="tablist"><button role="tab" data-k="sub" aria-selected="true">Subskrypcja</button><button role="tab" data-k="once" aria-selected="false">Płatność jednorazowa</button></div>
+  <div class="pg" id="pg"></div>
+  <div class="tip" style="margin:0 0 26px"><span style="color:var(--blue);flex:none;display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span>Program działa na Windowsie, macOS i Linuksie. Przełącznik „Wersja macOS” dodaje obsługę macOS: przy Free zamienia kartę na Basic macOS (1 urządzenie), a przy Pro pokazuje cenę wersji, która działa też na Windowsie i Linuksie, nie tylko na macOS. Licencja Pro obejmuje do 2 urządzeń. Plany miesięczne w subskrypcji mają 3-dniowy okres próbny.</span></div>
+  <h3 class="vs-title" style="margin-top:0">Porównanie funkcji</h3>
+  <div class="card" style="padding:6px 18px;overflow-x:auto">
+  <table class="pt">
+    <thead><tr><th>Funkcja</th><th>Free</th><th>Pro</th></tr></thead>
+    <tbody>
+    <tr><td>Przekazywanie alertów z Tipply do StreamElements</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Blokada zdublowanych alertów</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Historia wiadomości</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Panel w przeglądarce i lokalne API</td><td><i class="yes" role="img" aria-label="tak"></i></td><td>rozszerzone</td></tr>
+    <tr><td>Powiadomienia na pulpicie</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Tokeny w sejfie systemu</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Wiele kont Tipply</td><td><i class="yes" role="img" aria-label="tak"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Reguły: reaguj na nick, kwotę lub treść wpłaty</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Ustawienia z poziomu przeglądarki</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Dane na żywo dla własnych overlayów i botów</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr><td>Własny nick i treść alertu testowego</td><td><i class="no" role="img" aria-label="nie"></i></td><td><i class="yes" role="img" aria-label="tak"></i></td></tr>
+    <tr class="price"><td>Cena (netto)</td><td>0 USD</td><td>od 3 USD/msc lub od 28,50 USD/rok</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Ceny netto – VAT zgodnie z prawem kraju użytkownika; mogą się zmieniać. Licencja Pro obejmuje do 2 urządzeń, a licencja Free dla macOS – 1 urządzenie.</p>
+</div></section>
+
+<section id="pobierz"><div class="wrap">
+  <div class="cta-box">
+    <h2>Twój tip. Twój alert. Zacznij w 2 minuty.</h2>
+    <p>Pobierz wersję Free, połącz Tipply ze StreamElements i skup się na streamie. Resztą zajmie się TipplyConnector.</p>
+    <div class="cta" style="justify-content:center"><a class="btn p" href="#plany">Pobierz Free</a><a class="btn s" href="#platformy">Obsługiwane systemy</a></div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="eyebrow">FAQ</div><h2>Najczęstsze pytania</h2>
+  <p class="sub">Krótko i uczciwie – to, co warto wiedzieć przed instalacją.</p>
+  <div class="faqs">
+  <details class="faq"><summary>Czy to oficjalny program Tipply?</summary><p>Nie. TipplyConnector to niezależny projekt, który nie ma żadnych powiązań z Tipply.pl ani ze StreamElements. Nazw tych usług używamy tylko po to, żeby powiedzieć, z czym program współpracuje.</p></details>
+  <details class="faq"><summary>Do czego służy TipplyConnector?</summary><p>Przesyła powiadomienia o wpłatach z Tipply do StreamElements, dzięki czemu alerty od widzów pojawiają się na Twoim streamie.</p></details>
+  <details class="faq"><summary>Co dzieje się z moimi danymi?</summary><p>Wszystko zostaje na Twoim komputerze: historia wpłat i ustawienia, a tokeny trafiają do systemowego magazynu poświadczeń (w Windowsie to Credential Manager). Program nie wysyła Twoich danych na serwery autora. Łączy się tylko z tym, co jest potrzebne do działania: z Tipply (odbiór alertów i, jeśli to włączysz, adres e-mail darczyńcy), ze StreamElements (wysyłanie alertów) oraz z serwerami czasu, które sprawdzają datę.</p></details>
+  <details class="faq"><summary>Czym różni się Free od Pro?</summary><p>Free przekazuje alerty, pilnuje, żeby się nie dublowały, zapisuje historię i ma panel w przeglądarce. Pro dorzuca reguły, np. światło lub dźwięk przy dużym tipie, ustawienia z poziomu przeglądarki, dane na żywo dla własnych nakładek oraz alert testowy z dowolnym nickiem i treścią.</p></details>
+  <details class="faq"><summary>Czy wersja Free wystarczy?</summary><p>Dla większości streamerów w zupełności wystarczy. Pro jest dla osób, które potrzebują automatyzacji, np. przy reakcjach na wpłaty, lub chcą tworzyć własne nakładki na live.</p></details>
+  <details class="faq"><summary>Na jakich systemach działa?</summary><p>Na Windowsie, macOS i Linuksie, na procesorach x64 (Intel i AMD) oraz ARM. Są wersje dla Windows x64 i ARM64, macOS Intel i Apple Silicon oraz Linuksa (x86_64, ARM64 i ARMv7, w odmianach glibc i musl). Free i Pro obsługują te same systemy.</p></details>
+  <details class="faq"><summary>Dlaczego jest taki lekki?</summary><p>Program jest napisany w Rust, dzięki czemu zajmuje na dysku kilka megabajtów, uruchamia się w około dwie sekundy i nie zjada pamięci, którą wolisz zostawić dla gry i OBS-a.</p></details>
+  <details class="faq"><summary>Czy to już pełna wersja programu?</summary><p>To wczesne wydanie 1.0.0. Część funkcji dopiero powstaje, m.in. automatyczne aktualizacje, wersje językowe i pełna obsługa ikony w zasobniku systemowym. Program sprawdza też aktualną datę w internecie – po terminie zapisanym w danej wersji trzeba pobrać nowszą.</p></details>
+  <details class="faq"><summary>Co, jeśli Tipply coś zmieni na swojej stronie?</summary><p>Zewnętrzne serwisy mogą w każdej chwili zmienić sposób działania, a to może wpłynąć na pracę programu. Traktuj TipplyConnector jako wygodne narzędzie, a nie gwarancję, że wszystko zawsze zadziała.</p></details>
+  <details class="faq"><summary>Na co zwrócić uwagę przed użyciem?</summary><p>Program działa na Twoim koncie i z danymi, które sam podajesz, a korzystasz z niego na własną odpowiedzialność. Przed startem przeczytaj regulaminy Tipply i StreamElements oraz sprawdź przepisy obowiązujące w Twoim kraju, w tym RODO, jeśli przetwarzasz dane darczyńców.</p></details>
+  <details class="faq"><summary>Jak wygląda zakup Pro i czy mogę go zwrócić?</summary><p>Pro kupisz w subskrypcji (od 3,00 USD miesięcznie lub od 28,50 USD rocznie) albo jako płatność jednorazową na wybrany okres. Plan miesięczny zaczyna się od 3-dniowego okresu próbnego. Ceny podajemy netto. Masz prawo odstąpić od umowy w ciągu 14 dni od zakupu, chyba że zgodzisz się na natychmiastowe rozpoczęcie świadczenia usługi.</p></details>
+  <details class="faq"><summary>Na ilu urządzeniach mogę używać licencji?</summary><p>Licencja Pro obejmuje do 2 urządzeń. Licencja Free dla macOS (Basic macOS) jest na 1 urządzenie.</p></details>
+  <details class="faq"><summary>Czy Pro z obsługą macOS działa tylko na Macu?</summary><p>Nie. Wersja Pro z obsługą macOS działa także na innych systemach, czyli na Windowsie i Linuksie, a nie tylko na macOS.</p></details>
+  <details class="faq"><summary>Czy mogę najpierw wypróbować Pro?</summary><p>Tak. Plany miesięczne w subskrypcji mają 3-dniowy okres próbny.</p></details>
+  <details class="faq"><summary>Czy mogę połączyć program z własnymi skryptami lub nakładkami?</summary><p>Tak. Program ma lokalne API chronione kluczem <code>X-API-Key</code> (domyślnie pod adresem 127.0.0.1, port 26210). W wersji Pro pojawi się dodatkowo odbieranie nowych wiadomości na żywo.</p></details>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 TipplyConnector</span><span>TipplyConnector jest niezależnym projektem twórczym i nie ma powiązania z Tipply.pl</span></div></footer>
+
+<script>
+(function(){
+  var r=document.documentElement;
+  try{var t=localStorage.getItem('theme');if(t)r.setAttribute('data-theme',t)}catch(e){}
+  document.getElementById('theme').addEventListener('click',function(){
+    var n=r.getAttribute('data-theme')==='light'?'dark':'light';
+    r.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+})();
+</script>
+<script>
+(function(){
+  var F=function(n){return n.toFixed(2).replace('.',',')};
+  var OFF='dopłata za obsługę macOS',ON='działa też na Windows i Linux, nie tylko na macOS';
+  var D={
+    sub:[
+      {name:'Premium · 1 miesiąc',desc:'Pełna wersja aplikacji w subskrypcji miesięcznej.',price:3.00,mac:4.50,per:'/msc',trial:1,offh:OFF,onh:ON,url:'https://www.creem.io/payment/prod_218rdSUyLWqllTtQnqqzjh',murl:'https://www.creem.io/payment/prod_5eUYJ6uBvs9JE0T5C0vgEV'},
+      {name:'Premium · 1 rok',desc:'Pełna wersja aplikacji w subskrypcji rocznej.',price:28.50,mac:30.00,per:'/rok',badge:'Najlepsza cena',hl:1,offh:OFF,onh:ON,url:'https://www.creem.io/payment/prod_3sBG2KNmcAux2g9hEiwkmG',murl:'https://www.creem.io/payment/prod_5ceXHKGtm4QEkizzSyTJ2'}
+    ],
+    once:[
+      {name:'Premium · 1 miesiąc',desc:'Pełna wersja aplikacji na jeden miesiąc. Jednorazowa płatność, bez odnawiania.',price:4.00,per:'',url:'https://www.creem.io/payment/prod_7Lh8hwHdnUQUx8evj5ndkN'},
+      {name:'Premium · 1 rok',desc:'Pełna wersja aplikacji na jeden rok. Jednorazowa płatność, bez odnawiania.',price:32.00,per:'',hl:1,url:'https://www.creem.io/payment/prod_3mNcpdOKlrndp3IxWTMwou'}
+    ]
+  };
+  var grid=document.getElementById('pg');
+  var FR={name:'Free',mname:'Basic · macOS',price:0,mac:0,url:'https://www.creem.io/payment/prod_5NhrVKCxynZeYvbAPhx3uA',murl:'https://www.creem.io/payment/prod_6ghlcRJsLJCOp11Xfjlvvv',btn:'Pobierz Free',mbtn:'Pobierz Basic macOS',offh:'wersja Basic na macOS',onh:'Basic macOS: licencja na 1 urządzenie'};
+  function upd(i,o,on){
+    var q=function(a){return grid.querySelector('['+a+'="'+i+'"]');};
+    q('data-n').textContent=on?(o.mname||o.name+' + macOS'):o.name;
+    if(o.mac!=null&&o.mac!==o.price)q('data-p').textContent=F(on?o.mac:o.price);
+    var b=q('data-b');b.href=on?o.murl:o.url;if(o.mbtn)b.textContent=on?o.mbtn:o.btn;
+    q('data-h').textContent=on?o.onh:o.offh;
+  }
+  function sw(i,mac,h){return '<label class="sw"><span>Wersja macOS<small data-h="'+i+'">'+h+'</small></span><input type="checkbox" class="ios" '+(mac?'data-i="'+i+'"':'disabled')+' aria-label="Wersja macOS"></label>';}
+  function free(){return '<div class="card pc"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3 data-n="f">Free</h3><span class="pbadge">Licencja bezterminowa</span></div><p>Wersja podstawowa: przekazywanie alertów, blokada dubli, historia wiadomości i panel w przeglądarce.</p><div class="pp"><b data-p="f">0</b><small>USD</small></div>'+sw('f',true,FR.offh)+'<a class="btn s" data-b="f" href="'+FR.url+'" target="_blank" rel="noopener">Pobierz Free</a></div>';}
+  function card(o,i){var m=o.mac!=null;return '<div class="card pc'+(o.hl?' hl':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3 data-n="'+i+'">'+o.name+'</h3>'+(o.trial?'<span class="pbadge">3 dni za darmo</span>':'')+(o.badge?'<span class="pbadge">'+o.badge+'</span>':'')+'</div><p>'+o.desc+'</p><div class="meta">Licencja na maks. 2 urządzenia</div><div class="pp"><b data-p="'+i+'">'+F(o.price)+'</b><small>USD'+o.per+'</small></div>'+sw(i,m,m?o.offh:'niedostępne w tej opcji')+'<a class="btn p" data-b="'+i+'" href="'+o.url+'" target="_blank" rel="noopener">'+(o.trial?'Wypróbuj 3 dni za darmo':'Kup Premium')+'</a></div>';}
+  function render(k){
+    grid.innerHTML=free()+D[k].map(card).join('');
+    grid.querySelectorAll('.ios[data-i]').forEach(function(el){
+      el.addEventListener('change',function(){
+        var i=el.getAttribute('data-i'),o=(i==='f'?FR:D[k][i]),on=el.checked;
+        upd(i,o,on);
+      });
+    });
+  }
+  document.querySelectorAll('.seg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.seg button').forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
+      render(b.getAttribute('data-k'));
+    });
+  });
+  render('sub');
+})();
+</script>
+</body>
+</html>
